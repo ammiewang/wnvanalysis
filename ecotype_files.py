@@ -6,7 +6,7 @@ from ete3 import Tree
 from Bio import SeqIO
 import logparser
 
-def line():
+def line(dict):
     txt = input("log/text file: ")
     name = input("name your fastas (do not include .fas extenstion): ")
     ecotypes = logparser.parser(txt)
@@ -25,6 +25,5 @@ if __name__ == "__main__":
     fasta_file = input("fasta file: ")
     sequences = SeqIO.parse(fasta_file, "fasta")
     dict = SeqIO.to_dict(sequences)
-    sequences_list = list(sequences)
 
-    line()
+    line(dict)

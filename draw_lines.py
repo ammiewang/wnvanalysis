@@ -9,7 +9,7 @@ from ete3 import Tree
 from Bio import SeqIO
 import logparser
 
-def set_s():
+def set_s(ecs,t):
     s =[]
     i = 0
     while i < len(ecs): #pairs of (ecotype, common ancestor of ecotype)
@@ -112,12 +112,12 @@ if __name__ == "__main__":
     t.write(format=1, outfile="ultrametric.nwk")
     root = t.get_tree_root()
 
-    s = set_s()
+    s = set_s(ecs,t)
     less_ecotypes = back(s,s,t)
     #print(less_ecotypes)
     #print(len(less_ecotypes))
     to_log(less_ecotypes)
-    s = set_s()
+    s = set_s(ecs,t)
     more_ecotypes = fwd(s,t)
     #print(more_ecotypes)
     #print(len(more_ecotypes))

@@ -3,17 +3,8 @@
 Creates FASTA files for each ecotype which are then processed by pd_overall.
 """
 from ete3 import Tree
-from Bio import Phylo
 from Bio import SeqIO
-import random
-import math
-import operator
-import numpy
 import logparser
-fasta_file = input("fasta file: ")
-sequences = SeqIO.parse(fasta_file, "fasta")
-dict = SeqIO.to_dict(sequences)
-sequences_list = list(sequences)
 
 def line():
     txt = input("log/text file: ")
@@ -30,4 +21,10 @@ def line():
         i += 1
 
 if __name__ == "__main__":
+
+    fasta_file = input("fasta file: ")
+    sequences = SeqIO.parse(fasta_file, "fasta")
+    dict = SeqIO.to_dict(sequences)
+    sequences_list = list(sequences)
+
     line()

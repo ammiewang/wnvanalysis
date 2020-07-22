@@ -6,40 +6,16 @@ merge the most newly divergent clades. In the case of >x ecotypes, the fwd() fun
 on the tree and split the clades closest to the root.
 """
 from ete3 import Tree
-from Bio import Phylo
 from Bio import SeqIO
-import random
-import math
-import operator
-import numpy
 import logparser
-fasta_file = input("fasta file: ")
-sequences = SeqIO.parse(fasta_file, "fasta")
-sequences_list = list(sequences)
-nwk_file = input("newick file: ")
-t = Tree(nwk_file)
-read_length = len(sequences_list[0])
-txt_file = input("log/text file: ")
-ecs = logparser.parser(txt_file)
-t.convert_to_ultrametric()
-t.write(format=1, outfile="ultrametric.nwk")
-root = t.get_tree_root()
 
-node = []
-for seq in sequences_list:
-    node.append(seq.id)
-
-i = 0
-ecss = []
-while i < len(ecs): #make ecotypes into sets, easier for comparison
-    ecss.append(set(ecs[i]))
-    i += 1
-
-s =[]
-i = 0
-while i < len(ecs): #pairs of (ecotype, common ancestor of ecotype)
-    s.append((ecs[i], t.get_common_ancestor(ecs[i])),)
-    i += 1
+def set_s():
+    s =[]
+    i = 0
+    while i < len(ecs): #pairs of (ecotype, common ancestor of ecotype)
+        s.append((ecs[i], t.get_common_ancestor(ecs[i])),)
+        i += 1
+    return s
 
 def get_names(t): #get the IDs of all sequences in a tree
     new_node = []
@@ -54,7 +30,7 @@ def get_names(t): #get the IDs of all sequences in a tree
 
 def back(xs,ys,t): #outputs less ecotypes than the original, moves backwards on tree
     j = len(ys)
-    num_ecotypes = input("number of desired ecotypes: ")
+    num_ecotypes = int(input("number of desired ecotypes: "))
     while j > num_ecotypes:
         temp = []
         k = 0
@@ -85,7 +61,7 @@ def fwd(ys,t):
     j = len(ys)
     zs = []
     k = 0
-    num_ecotypes = input("number of desired ecotypes: ")
+    num_ecotypes = int(input("number of desired ecotypes: "))
     while k < len(ys): #current distance to each ecotype found
         zs.append((ys[k][0], ys[k][1], t.get_distance(ys[k][1])),)
         k += 1
@@ -123,10 +99,25 @@ def to_log(ecotypes):
         count += 1
 
 if __name__ == "__main__":
+
+    fasta_file = input("fasta file: ")
+    sequences = SeqIO.parse(fasta_file, "fasta")
+    sequences_list = list(sequences)
+    nwk_file = input("newick file: ")
+    t = Tree(nwk_file)
+    read_length = len(sequences_list[0])
+    txt_file = input("log/text file: ")
+    ecs = logparser.parser(txt_file)
+    t.convert_to_ultrametric()
+    t.write(format=1, outfile="ultrametric.nwk")
+    root = t.get_tree_root()
+
+    s = set_s()
     less_ecotypes = back(s,s,t)
     #print(less_ecotypes)
     #print(len(less_ecotypes))
     to_log(less_ecotypes)
+    s = set_s()
     more_ecotypes = fwd(s,t)
     #print(more_ecotypes)
     #print(len(more_ecotypes))

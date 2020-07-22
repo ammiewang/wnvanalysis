@@ -25,9 +25,10 @@ def big_file():
             over_one += e_len #if the ecotype is a non-singleton its size is added to the total size count
     return sum/over_one #this returns the weighted average pairwise sequence divergence across all ecotypes
 
-print("Average Pairwise Divergence in Each Ecotype: ")
-average_pd_across_ecotypes = big_file()
-print("Average Pairwise Divergence Across All Ecotypes: ")
-print(average_pd_across_ecotypes)
-print("Effective Population Size: ")
-print(average_pd_across_ecotypes/(6*10**(-5)))
+if __name__ == '__main__':
+    print("Average Pairwise Divergence in Each Ecotype: ")
+    average_pd_across_ecotypes = big_file()
+    print("Average Pairwise Divergence Across All Ecotypes: ")
+    print(average_pd_across_ecotypes)
+    print("Effective Population Size: ")
+    print(average_pd_across_ecotypes/(6*10**(-5)))

@@ -6,9 +6,6 @@ from ete3 import Tree
 from Bio import Phylo
 from Bio import SeqIO
 import random
-import math
-import operator
-import numpy
 import logparser
 
 def pd(f): #pd for pairwise divergence
@@ -52,5 +49,4 @@ def pd(f): #pd for pairwise divergence
         print(sum/num)
         return sum/num, len(sequences_list) #sum/num is the average pairwise divergence in an ecotype while len(sequences_list) is the size of the ecotype
     else:
-        #print(0)
         return None,  len(sequences_list)

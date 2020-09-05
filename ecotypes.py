@@ -55,10 +55,13 @@ class Ecotypes:
         over_one = 0
         sum = 0
         for fname in filenames:
-            x, e_len = self.pd(fname) #submits the ecotypes group by group to the pairwise sequence divergence calculator, receives the PD and the size of the ecotype
+            #submits the ecotypes group by group to the pairwise sequence divergence calculator
+            #receives the PD and the size of the ecotype
+            x, e_len = self.pd(fname)
             if x is not None: #makes sure to exclude any singleton ecotypes
                 sum += x*e_len #adds the weighted PD to the total PD across all ecotypes
-                over_one += e_len #if the ecotype is a non-singleton its size is added to the total size count
+                over_one += e_len #ecotype size is added to the total size count
+        #we take the sum/over_one to get overall pairwise sequence divergence
         return sum/over_one
 
     def pd(self, f): #pd for pairwise divergence
@@ -67,10 +70,14 @@ class Ecotypes:
         """
         sequences = SeqIO.parse(f, "fasta")
         sequences_list = list(sequences)
-        if len(sequences_list) == 1: #if there is only a single sequence we cannot measure pairwise sequence divergence so we immediately return
+        if len(sequences_list) == 1:
+            #if there is only a single sequence we cannot measure
+            #pairwise sequence divergence so we immediately return
             return None, 1
 
-        matrix = [] #the pairwise divergence for sequences i and j will be stored at matrix[i][j] while matrix[j][i] will remain None as they are the same
+        matrix = []
+        #the pairwise divergence for sequences i and j will be stored at matrix[i][j]
+        #while matrix[j][i] will remain None as they are the same
         for i in range(len(sequences_list)):
             m = []
             for j in range(len(sequences_list)):
@@ -83,27 +90,41 @@ class Ecotypes:
             ui = sequences_list[i].seq.upper()
             for j in range(i+1, len(sequences_list)):
                 x = 0
-                seq_len = len(sequences_list[0].seq) #every time we pick a new sequence j to pair with sequence i, we revert to the shared length of all the aligned sequences
+                #every time we pick a new sequence j to pair with sequence i,
+                #we revert to the shared length of all the aligned sequences
+                seq_len = len(sequences_list[0].seq)
                 uj = sequences_list[j].seq.upper()
                 for k in range(len(sequences_list[0].seq)):
-                    if ui[k] not in nucleotides or uj[k] not in nucleotides: #the efficiency can be somewhat increased without this check although this may deteriorate accuracy
-                        seq_len -= 1 #every time a nucleotide is not in the set {'A', 'G', 'C', 'T', '-'},
-                        #we subtract one from the length since we will not consider these nucleotides in the pairwise divergence calculation
+                    #the efficiency can be somewhat increased without the check below
+                    #although this may deteriorate accuracy
+                    if ui[k] not in nucleotides or uj[k] not in nucleotides:
+                        #every time a nucleotide is not in the set {'A', 'G', 'C', 'T', '-'},
+                        #we subtract one from the length since we will not consider
+                        #these nucleotides in the pairwise divergence calculation
+                        seq_len -= 1
                     elif ui[k] != uj[k]:
-                        x += 1 #every time both nucleotides are in the set {'A', 'G', 'C', 'T', '-'} but do not match, we add one to the "divergence" count
-                pd = x / seq_len #we take the divergence count over the length to get the pairwise divergence for sequences i and j
+                        #every time both nucleotides are in the set {'A', 'G', 'C', 'T', '-'}
+                        #but do not match, we add one to the "divergence" count
+                        x += 1
+                #we take the divergence count over the length
+                #to get the pairwise divergence for sequences i and j
+                pd = x / seq_len
                 matrix[i][j] = pd
 
         sum = 0
         num = 0
         for x in range(len(matrix)):
             for y in range(len(matrix[0])):
-                if matrix[x][y] is not None: #across all valid matrix entries we take a sum of the pairwise divergence values and count the number of pairs
+                if matrix[x][y] is not None:
+                    #across all valid matrix entries we take a sum of
+                    #the pairwise divergence values and count the number of pairs
                     sum += matrix[x][y]
                     num += 1
         if num is not 0:
+            #sum/num is the average pairwise divergence in an ecotype
+            #while len(sequences_list) is the size of the ecotype
             print(sum/num)
-            return sum/num, len(sequences_list) #sum/num is the average pairwise divergence in an ecotype while len(sequences_list) is the size of the ecotype
+            return sum/num, len(sequences_list)
         else:
             return None,  len(sequences_list)
 

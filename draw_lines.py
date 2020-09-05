@@ -39,16 +39,20 @@ def back(fas, nwk, ys, t):
         temp = []
         k = 0
         while k < len(ys):
+            #find next node up from the common ancestor of an ecotype
+            #this will be a new putative ecotype
             newt = t.get_common_ancestor(ys[k][0])
-            p = newt.up #find next node up from the common ancestor of an ecotype, this will be a new putative ecotype
+            p = newt.up
             if p:
                 p_names = get_names(p) #get IDs of all sequences in the node
                 dist = t.get_distance(p) #get distance from the root
                 if (set(p_names),p,dist) not in temp:
                     temp.append((set(p_names),p,dist),) #add the merged ecotype to temporary list
             k += 1
-        keymax = max(temp, key= lambda x: x[2]) #find the putative ecotype in temp whith the greatest distance from the root
-        #(i.e. the most newly divergent putative ecotype), we will take this as a new ecotype and repeat the above process until num_ecotypes is reached
+        #find the putative ecotype in temp whith the greatest distance from the root
+        #(i.e. the most newly divergent putative ecotype), we will take this as a new ecotype
+        #and repeat the above process until num_ecotypes is reached
+        keymax = max(temp, key= lambda x: x[2])
         to_remove = []
         m = 0
         while m < len(ys): #find and remove any child nodes of the new ecotype from the ecotype list
